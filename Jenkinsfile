@@ -55,7 +55,7 @@ pipeline{
             }
        }
        stage('Quality Gate Status Check : Sonarqube'){
-         when { expression {  params.action == 'create' } }
+         when { expression {  params.action == 'skip' } }
             steps{
                script{
                    
@@ -107,6 +107,16 @@ pipeline{
                    
                    dockerImageCleanup("${params.ImageName}","${params.ImageTag}","${params.DockerHubUser}")
                }
+            }
+        }
+	stage('Deploy to Minikube') {
+         when {
+                expression { params.action == 'create' }
+            }
+            steps {
+                script {
+                    sh "kubectl apply -f deployment.yaml"
+                }
             }
         }      
     }
