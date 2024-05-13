@@ -55,7 +55,7 @@ pipeline{
             }
        }
        stage('Quality Gate Status Check : Sonarqube'){
-         when { expression {  params.action == 'create' } }
+         when { expression {  params.action == 'skip' } }
             steps{
                script{
                    
@@ -115,9 +115,11 @@ pipeline{
             }
             steps {
                 script {
-                    sh "kubectl apply -f deployment.yaml"
+  			withKubeConfig([credentialsId: 'data-newconfig']) {
+	                    sh "kubectl apply -f deployment.yaml"
+			}
                 }
             }
-        }      
+        }
     }
 }
