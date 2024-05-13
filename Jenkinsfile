@@ -115,9 +115,13 @@ pipeline{
             }
             steps {
                 script {
-  			withKubeConfig([credentialsId: 'data-newconfig']) {
-	                    sh "kubectl apply -f deployment.yaml"
-			}
+			def kubeconfigPath = "kubeconfig-set"
+                    
+                    // Set the environment variable for KUBECONFIG
+                    	env.KUBECONFIG = kubeconfigPath
+                    
+                    // Run kubectl command to apply the deployment
+                    	sh "kubectl apply -f deployment.yaml"
                 }
             }
         }
